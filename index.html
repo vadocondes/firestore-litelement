@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Jugando con Firebase</title>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+  <style>
+  body {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+  </style>
+</head>
+<body>
+  <h1>Jugando con Firebase</h1>
+
+  <super-app>
+    <p>Loading...</p>
+  </super-app>
+
+  <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> 
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/5.11.0/firebase-app.js"></script>
+
+  <!-- SDKs for Firebase products that you want to use  -->
+  <script src="https://www.gstatic.com/firebasejs/5.11.0/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyD1VSHw6-XLvKQK66ehknsKd4YJs9eGN4w",
+      authDomain: "test-workarround.firebaseapp.com",
+      databaseURL: "https://test-workarround.firebaseio.com",
+      projectId: "test-workarround",
+      storageBucket: "test-workarround.appspot.com",
+      messagingSenderId: "795279107711",
+      appId: "1:795279107711:web:1c4fb08db56d0e30"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <script src="src/index.js" type="module"></script>
+</body>
+</html>
