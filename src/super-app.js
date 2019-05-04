@@ -1,5 +1,7 @@
 import { LitElement, html } from 'lit-element';
-import './user-insert';
+import './user/user-insert';
+import './user/user-list';
+import './firestore/firestore-collection';
 
 class SuperApp extends LitElement {
 
@@ -11,32 +13,27 @@ class SuperApp extends LitElement {
   constructor() {
     super();
     this.users = [];
-
     // Initialize Cloud Firestore through Firebase
     this.db = firebase.firestore();
-
-    this.db.collection("users")
-    .onSnapshot( querySnapshot => {
-        const newUsersCollection = [];
-        querySnapshot.forEach( doc => {
-          newUsersCollection.push(doc.data());
-        });
-        this.users = newUsersCollection;
-    });
-
   }
 
   render() {
     return html`
+      <firestore-collection collection="users" @new-data="${this.saveUsers}"></firestore-collection>
       <user-insert @user-insert="${this.userInsert}"></user-insert>
-      ${this.users.map( user => {
-        return html`
-          <p>${user.first}</p>
-          `;
-      })}
+      <user-list 
+        .users="${this.users}" 
+        @delete-user="${this.deleteUser}"
+        @user-edit="${this.editUser}"
+      ></user-list>
+      
       <hr>
       <button @click="${this.getUsersSnapshot}">Obten los datos una vez</button>
     `;
+  }
+
+  saveUsers(e) {
+    this.users = e.detail;
   }
 
   getUsersSnapshot() {
@@ -58,5 +55,27 @@ class SuperApp extends LitElement {
     });
   }
 
+  deleteUser(e) {
+    let user = e.detail;
+    this.db.collection("users").doc(user.id).delete().then(function() {
+      console.log("Document successfully deleted!");
+    }).catch(function(error) {
+        console.error("Error removing document: ", error);
+    });
+  }
+
+  editUser(e) {
+    const user = e.detail;
+    const userRef = this.db.collection("users").doc(user.id);
+    user.id = null;
+    return userRef.update(user)
+    .then(function() {
+        console.log("Document successfully updated!");
+    })
+    .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+    });
+  }
 }
 customElements.define('super-app', SuperApp);

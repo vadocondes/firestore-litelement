@@ -1,7 +1,10 @@
 import { LitElement, html, css } from 'lit-element';
 import 'dile-input/dile-input';
+import './user-form';
+import { userFormMixin } from './user-form-mixin';
+import '../eit-button';
 
-class UserInsert extends LitElement {
+class UserInsert extends userFormMixin(LitElement) {
 
   /**
     * Object describing property-related metadata used by Polymer features
@@ -24,32 +27,28 @@ class UserInsert extends LitElement {
     return css`
       :host {
         display: block;
-        margin-bottom: 15px;
-      }
-      a {
-        display: inline-block;
-        text-decoration: none;
-        text-transform: uppercase;
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
       }
     `;
   }
   render() {
     return html`
-      <dile-input value="${this.user.first}" label="Nombre" name="first" @input="${this.inputChanged}"></dile-input>
-      <dile-input value="${this.user.last}" label="Apellido" name="last" @input="${this.inputChanged}"></dile-input>
-      <dile-input value="${this.user.born}" label="Año de nacimiento" name="born" @input="${this.inputChanged}"></dile-input>
-      <a href="#" @click="${this.insert}">Insertar</a>
+      <user-form .user="${this.user}" @user-changed="${this.onUserChanged}"></user-form>
+      <eit-button @click="${this.insert}">Insertar</eit-button>
     `;
   }
 
-  inputChanged(e) {
-    this.user[e.target.name] = e.target.value;
-  }
+  
   insert(e) {
     e.preventDefault();
     this.dispatchEvent(new CustomEvent('user-insert', {
       detail: this.user
     }));
   }
+
+  
 }
 customElements.define('user-insert', UserInsert);
