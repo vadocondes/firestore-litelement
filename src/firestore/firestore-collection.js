@@ -1,32 +1,18 @@
 import { LitElement, html } from 'lit-element';
+import { FirestoreMixin } from './firestore-mixin';
 
-class FirestoreCollection extends LitElement {
-  static get properties() {
-    return {
-      collection: { 
-        type: String,
-        hasChanged() {
-          return false;
-        }
-      },
-      data: { type: Array }
-    };
+class FirestoreCollection extends FirestoreMixin(LitElement) {
+
+  updated(changedProperties) {
+    if(changedProperties.has('collection')) {
+      this._doSubscription()
+    }
   }
 
-  constructor() {
-    super();
-    // Initialize Cloud Firestore through Firebase
-    this.db = firebase.firestore();
-
-    this.collection = null;
-  }
-  
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    if(name == 'collection' && newValue) {
-      console.log('attributeChangedCallback', name, oldValue, newValue);
-      this.db.collection(newValue)
-      .onSnapshot( querySnapshot => {
+  _doSubscription() {
+    super._doSubscription();
+    if(this.collection) {
+      this.unsubscribe = this.db.collection(this.collection).onSnapshot( querySnapshot => {
           const newData = [];
           querySnapshot.forEach( doc => {
             const currItem = {
@@ -37,15 +23,11 @@ class FirestoreCollection extends LitElement {
           });
           this.saveData(newData);
       });
+    } else {
+      this.saveData([]);
     }
   }
 
-  saveData(newData) {
-    console.log('saveData', newData);
-    this.data = newData;
-    this.dispatchEvent(new CustomEvent('new-data', {
-      detail: newData
-    }));
-  }
+  
 }
 customElements.define('firestore-collection', FirestoreCollection);

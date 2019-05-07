@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit-element';
 import { userFormMixin } from './user-form-mixin';
-import '../eit-button';
+import '@dile/dile-button/dile-button';
 
 class UserEdit extends userFormMixin(LitElement) {
 
@@ -24,7 +24,7 @@ class UserEdit extends userFormMixin(LitElement) {
   render() {
     return html`
       <user-form .user="${this.user}" @user-changed="${this.onUserChanged}"></user-form>
-      <eit-button href="#" @click="${this.edit}">Editar</eit-button>
+      <dile-button href="#" @click="${this.edit}">Editar</dile-button>
     `;
   }
 
